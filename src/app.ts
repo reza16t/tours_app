@@ -9,7 +9,7 @@ const app = express();
 
 // 1) MIDDLEWARES
 if (process.env.NODE_ENV === 'development') {
-  app.use(morgan('dev'));
+   app.use(morgan('dev'));
 }
 
 app.use(express.json());
@@ -20,8 +20,9 @@ app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
 
 dotenv.config({ path: './config.env' });
-
+console.log(process.env.NODE_ENV);
+// 4) START SERVER
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
-  console.log(`App running on port ${port}...`);
+   console.log(`App running on port ${port}...`);
 });
