@@ -2,33 +2,54 @@ import { Response, Request } from "express";
 
 import { ToursTypeFull } from "../types";
 import { Tour } from "../Models/tourModel";
-import { readFileSync } from "fs";
+import { ApiFeatures } from "../util/ApiFeature";
+// import { readFileSync } from "fs";
 
-export const insertAllTours = async (req: Request, res: Response) => {
-   await Tour.deleteMany();
-   const tours = JSON.parse(
-      readFileSync(`${__dirname}/../dev-data/data/tours.json`, "utf8"),
-   );
+// export const insertAllTours = async (req: Request, res: Response) => {
+//    await Tour.deleteMany();
+//    const tours = JSON.parse(
+//       readFileSync(`${__dirname}/../dev-data/data/tours.json`, "utf8"),
+//    );
 
-   const tour = await Tour.create(tours);
-   // console.log(tours);
-   res.status(200).json({
-      status: "success",
-      data: {
-         tour: tour,
-      },
-   });
+//    const tour = await Tour.create(tours);
+//    // console.log(tours);
+//    res.status(200).json({
+//       status: "success",
+//       data: {
+//          tour: tour,
+//       },
+//    });
+// };
+
+export const aliasTopTours = (req, res, next) => {
+   req.query.limit = "5";
+   req.query.sort = "-ratingsAverage,price";
+   req.query.fields = "name,price,ratingsAverage,summary,difficulty";
+   next();
 };
 
 export const getAllTours = async (req: Request, res: Response) => {
-   const tours = await Tour.find();
-   res.status(200).json({
-      status: "success",
-      results: tours.length,
-      data: {
-         tours,
-      },
-   });
+   try {
+      const feature = new ApiFeatures(Tour.find(), req.query)
+         .filter()
+         .sort()
+         .fields()
+         .pagination();
+
+      const tours = await feature.query;
+      res.status(200).json({
+         status: "success",
+         results: tours.length,
+         data: {
+            tours,
+         },
+      });
+   } catch (error) {
+      res.status(400).json({
+         status: "failed",
+         message: error.message,
+      });
+   }
 };
 
 export const getTour = async (req: Request, res: Response) => {
