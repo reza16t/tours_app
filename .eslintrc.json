@@ -1,19 +1,44 @@
 {
-  "extends": ["airbnb", "prettier", "plugin:node/recommended"],
-  "plugins": ["prettier"],
-  "rules": {
-    "prettier/prettier": "error",
-    "spaced-comment": "off",
-    "no-console": "warn",
-    "consistent-return": "off",
-    "func-names": "off",
-    "object-shorthand": "off",
-    "no-process-exit": "off",
-    "no-param-reassign": "off",
-    "no-return-await": "off",
-    "no-underscore-dangle": "off",
-    "class-methods-use-this": "off",
-    "prefer-destructuring": ["error", { "object": true, "array": false }],
-    "no-unused-vars": ["error", { "argsIgnorePattern": "req|res|next|val" }]
-  }
+   "env": {
+      "browser": true,
+      "commonjs": true,
+
+      "es2021": true
+   },
+   "extends": [
+      // "eslint:recommended",
+      // "airbnb",
+      // "prettier",
+      // "plugin:node/recommended",
+      // "standard-with-typescript",
+      "plugin:@typescript-eslint/recommended"
+   ],
+   "parser": "@typescript-eslint/parser",
+   "parserOptions": {
+      "ecmaVersion": "latest"
+   },
+   // "plugins": ["@typescript-eslint", "prettier"],
+   "rules": {
+      "indent": ["error", 3],
+      "linebreak-style": ["error", "windows"],
+      "quotes": ["error", "double"],
+      "semi": ["error", "always"],
+      "spaced-comment": "off",
+      "no-console": "warn",
+      "consistent-return": "off",
+      "func-names": "off",
+      "object-shorthand": "off",
+      "no-process-exit": "off",
+      "no-param-reassign": "off",
+      "no-return-await": "off",
+      "no-underscore-dangle": "off",
+      "class-methods-use-this": "off",
+      "prefer-destructuring": ["error", { "object": true, "array": false }],
+      "@typescript-eslint/no-var-requires": "off",
+      "@typescript-eslint/no-unused-vars": [
+         "warn",
+         { "argsIgnorePattern": "req|res|next|val|err" }
+      ]
+      // "no-unused-vars":
+   }
 }
