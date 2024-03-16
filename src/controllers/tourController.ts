@@ -121,3 +121,53 @@ export const deleteTour = async (req: Request, res: Response) => {
       });
    }
 };
+export const getTourStats = async (req: Request, res: Response) => {
+   try {
+      const stats = await Tour.aggregate([
+         { $match: { ratingsAverage: { $gte: 4.5 } } },
+         {
+            $group: {
+               _id: "$difficulty",
+               numTours: { $sum: 1 },
+               maxPrice: { $max: "$price" },
+               minPrice: { $min: "$price" },
+               avgPrice: { $avg: "$price" },
+               numRatings: { $sum: "$ratingsQuantity" },
+               avgRating: { $avg: "$ratingsAverage" },
+            },
+         },
+      ]);
+      res.status(200).json({
+         status: "success",
+         data: {
+            tour: stats,
+         },
+      });
+   } catch (error) {
+      res.status(400).json({
+         status: "failed",
+         massage: error,
+      });
+   }
+};
+export const getMonthlyPlan = async (req: Request, res: Response) => {
+   try {
+      const year = +req.params.year;
+      const stats = await Tour.aggregate([
+         {
+            $unwind: "$statsDates",
+         },
+      ]);
+      res.status(200).json({
+         status: "success",
+         data: {
+            tour: stats,
+         },
+      });
+   } catch (error) {
+      res.status(400).json({
+         status: "failed",
+         massage: error,
+      });
+   }
+};
