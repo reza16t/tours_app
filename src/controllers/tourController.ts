@@ -4,12 +4,8 @@ import { ToursTypeFull } from "../types";
 import { Tour } from "../Models/tourModel";
 import { ApiFeatures } from "../util/ApiFeature";
 import { ErrorHandler } from "../util/ErrorHandler";
+import { catchAsync } from "../util/catchAsync";
 
-const catchAsync = (fn) => {
-   return (req, res, next) => {
-      fn(req, res, next).catch(next);
-   };
-};
 export const aliasTopTours = (req, res, next) => {
    req.query.limit = "5";
    req.query.sort = "-ratingsAverage,price";

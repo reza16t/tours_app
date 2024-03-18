@@ -2,7 +2,7 @@ import { Schema, model } from "mongoose";
 import { ToursTypeFull } from "../types";
 
 // 1) MIDDLEWARES
-const userSchema = new Schema<ToursTypeFull>(
+const toursSchema = new Schema<ToursTypeFull>(
    {
       name: {
          type: String,
@@ -92,7 +92,7 @@ const userSchema = new Schema<ToursTypeFull>(
    },
 );
 
-// userSchema.pre(/^find/, function () {
+// toursSchema.pre(/^find/, function () {
 //    console.log((<any>this).schema);
 // });
-export const Tour = model<ToursTypeFull>("Tour", userSchema);
+export const Tour = model<ToursTypeFull>("Tour", toursSchema);
