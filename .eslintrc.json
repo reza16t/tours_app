@@ -17,7 +17,7 @@
    "parserOptions": {
       "ecmaVersion": "latest"
    },
-   // "plugins": ["@typescript-eslint", "prettier"],
+   "plugins": ["@typescript-eslint", "prettier"],
    "rules": {
       "indent": ["error", 3],
       "linebreak-style": ["error", "windows"],
@@ -35,6 +35,7 @@
       "class-methods-use-this": "off",
       "prefer-destructuring": ["error", { "object": true, "array": false }],
       "@typescript-eslint/no-var-requires": "off",
+      "@typescript-eslint/no-explicit-any": "warn",
       "@typescript-eslint/no-unused-vars": [
          "warn",
          { "argsIgnorePattern": "req|res|next|val|err" }

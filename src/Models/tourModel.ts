@@ -80,6 +80,7 @@ const userSchema = new Schema<ToursTypeFull>(
          select: false,
       },
       startDates: [Date],
+      slug: String,
       secretTour: {
          type: Boolean,
          default: false,
@@ -91,4 +92,7 @@ const userSchema = new Schema<ToursTypeFull>(
    },
 );
 
+// userSchema.pre(/^find/, function () {
+//    console.log((<any>this).schema);
+// });
 export const Tour = model<ToursTypeFull>("Tour", userSchema);

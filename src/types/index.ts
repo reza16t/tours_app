@@ -42,6 +42,7 @@ export interface ToursTypeFull {
    secretTour: boolean;
    description: string;
    imageCover: string;
+   slug: string;
    locations: Location[];
 }
 
