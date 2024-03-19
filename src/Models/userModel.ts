@@ -1,28 +1,65 @@
 import { Schema, model } from "mongoose";
-import { IUser, Role } from "../types";
-
-const userSchema = new Schema<IUser>({
-   name: { type: String, required: true },
+import { IUserDocument, Role } from "../types";
+import bcrypt from "bcryptjs";
+export const userSchema = new Schema<IUserDocument>({
+   name: { type: String, required: [true, "name is required!"] },
 
    password: {
       type: String,
-      required: true,
+      required: [true, "password is required!"],
       match: [
-         /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,16}$/,
+         /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,16}$/,
          "Your password should have at minimum eight and maximum 16 characters, at least one uppercase letter, one lowercase letter, one number and one special character",
       ],
+      select: false,
+   },
+   passwordConfirm: {
+      type: String,
+      required: [true, "Please confirm your password!"],
+
+      validate: {
+         validator: function (el) {
+            return el === this.password;
+         },
+         message: "Passwords are not the same!",
+      },
+      select: false,
    },
    email: {
       type: String,
-      required: true,
+      required: [true, "email is required!"],
       lowercase: true,
       unique: true,
       match: [/^([\w])+(@)+([\w])+(\.)+([a-z]{1,4})$/, "Your email is invalid"],
    },
    avatar: String,
+   passwordChangedAt: Date,
+   role: {
+      type: String,
+      enum: [Role.Admin, Role.Guide, Role.LeadGuide, Role.User],
+      default: Role.User,
+   },
 });
-userSchema.pre("save", function () {
-   this.active = false;
-   this.role = Role.User;
+userSchema.pre("save", async function (next) {
+   if (!this.isModified("password")) return next();
+
+   this.password = await bcrypt.hash(this.password, 12);
+   this.passwordConfirm = undefined;
+   next();
 });
-export const User = model<IUser>("User", userSchema);
+
+userSchema.methods.correctPassword = async function (
+   candidatePassword: string,
+   userPassword: string,
+): Promise<string> {
+   return await bcrypt.compare(candidatePassword, userPassword);
+};
+userSchema.methods.changedPasswordAfter = function (JWT: number): boolean {
+   if (this.passwordChangedAt) {
+      const ChangeTimes = this.passwordChangedAt.getTime() / 1000;
+      return JWT < ChangeTimes;
+   }
+   return false;
+};
+
+export const User = model<IUserDocument>("User", userSchema);

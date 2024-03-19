@@ -58,6 +58,7 @@ export const globalErrorHandler = (
       if (error.name === "CastError") {
          error = handleCastErrorDB(error);
       }
+      // if (error.name === 'MongoError' && error.code === 11000)
       if (error.code === 11000) error = handleDuplicateFieldsDB(error);
       if (error.name === "ValidationError")
          error = handleValidationErrorDB(error);

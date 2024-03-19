@@ -11,7 +11,7 @@ dotenv.config({ path: "./config.env" });
 
 const DB = process.env.DB.replace("<PASSWORD>", process.env.DB_PASSWORD);
 mongoose.connect(DB, {}).then(() => {
-   console.log("ggg");
+   console.log("mongodb is connected");
 });
 // 1) MIDDLEWARES
 if (process.env.NODE_ENV === "development") {

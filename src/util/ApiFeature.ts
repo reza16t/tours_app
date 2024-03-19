@@ -1,6 +1,13 @@
+import QueryString from "qs";
+import { Document, Query } from "mongoose";
+import { IUserDocument, ToursTypeFull } from "../types";
 export class ApiFeatures {
-   query: any;
-   queryStr: any;
+   query: Query<
+      (Document<unknown, object> & Required<{ _id: string }>)[],
+      Document<unknown, object> & ToursTypeFull & IUserDocument
+   >;
+
+   queryStr: QueryString.ParsedQs;
    constructor(query, queryStr) {
       this.query = query;
       this.queryStr = queryStr;

@@ -1,18 +1,18 @@
-import { singup } from "../controllers/authController";
+import { signin, signup } from "../controllers/authController";
 import {
    createUser,
    deleteUser,
-   getAllUsers,
-   getUser,
+   getUsers,
    updateUser,
 } from "../controllers/userController";
 import express from "express";
 
 const router = express.Router();
 
-router.route("/").get(getAllUsers).post(createUser);
-router.post("/signup", singup);
+router.route("/").get(getUsers).post(createUser);
+router.post("/signup", signup);
+router.post("/signin", signin);
 
-router.route("/:id").get(getUser).patch(updateUser).delete(deleteUser);
+router.route("/:id").patch(updateUser).delete(deleteUser);
 
 module.exports = router;
