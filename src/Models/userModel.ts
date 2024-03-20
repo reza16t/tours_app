@@ -1,6 +1,7 @@
 import { Schema, model } from "mongoose";
 import { IUserDocument, Role } from "../types";
 import bcrypt from "bcryptjs";
+import { createHash, randomBytes } from "crypto";
 export const userSchema = new Schema<IUserDocument>({
    name: { type: String, required: [true, "name is required!"] },
 
@@ -34,6 +35,8 @@ export const userSchema = new Schema<IUserDocument>({
    },
    avatar: String,
    passwordChangedAt: Date,
+   passwordRestToken: String,
+   passwordRestExpires: Date,
    role: {
       type: String,
       enum: [Role.Admin, Role.Guide, Role.LeadGuide, Role.User],
@@ -47,7 +50,11 @@ userSchema.pre("save", async function (next) {
    this.passwordConfirm = undefined;
    next();
 });
-
+userSchema.pre("save", function (next) {
+   if (!this.isModified("password") || this.isNew) return next();
+   this.passwordChangedAt = new Date().toISOString();
+   next();
+});
 userSchema.methods.correctPassword = async function (
    candidatePassword: string,
    userPassword: string,
@@ -60,6 +67,15 @@ userSchema.methods.changedPasswordAfter = function (JWT: number): boolean {
       return JWT < ChangeTimes;
    }
    return false;
+};
+
+userSchema.methods.createPasswordRestToken = function () {
+   const restToken = randomBytes(32).toString("hex");
+   this.passwordRestToken = createHash("sha256")
+      .update(restToken)
+      .digest("hex");
+   this.passwordRestExpires = Date.now() + 10 * 60 * 1000;
+   return restToken;
 };
 
 export const User = model<IUserDocument>("User", userSchema);

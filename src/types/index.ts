@@ -77,7 +77,9 @@ export interface IUser {
    avatar: string;
    password: string;
    passwordConfirm: string;
-   passwordChangedAt: Date;
+   passwordChangedAt: string;
+   passwordRestToken: string;
+   passwordRestExpires: string;
 }
 
 export enum Role {
@@ -107,4 +109,5 @@ export interface IUserDocument extends IUser {
       userPassword: string,
    ) => Promise<string>;
    changedPasswordAfter: (JWT: number) => boolean;
+   createPasswordRestToken: () => string;
 }

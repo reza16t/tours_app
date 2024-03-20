@@ -10,7 +10,7 @@ const app = express();
 dotenv.config({ path: "./config.env" });
 
 const DB = process.env.DB.replace("<PASSWORD>", process.env.DB_PASSWORD);
-mongoose.connect(DB, {}).then(() => {
+mongoose.connect(DB).then(() => {
    console.log("mongodb is connected");
 });
 // 1) MIDDLEWARES
@@ -37,10 +37,3 @@ const port = process.env.PORT || 3000;
 app.listen(port, () => {
    console.log(`App running on port ${port}...`);
 });
-// process.on("unhandledRejection", (err: Error) => {
-//    console.log("UNHANDLED REJECTION! 💥 Shutting down...");
-//    console.log(err.name, err.message);
-//    server.close(() => {
-//       process.exit(1);
-//    });
-// });
