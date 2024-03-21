@@ -42,6 +42,7 @@ export const userSchema = new Schema<IUserDocument>({
       enum: [Role.Admin, Role.Guide, Role.LeadGuide, Role.User],
       default: Role.User,
    },
+   active: { type: Boolean, default: true, select: false },
 });
 userSchema.pre("save", async function (next) {
    if (!this.isModified("password")) return next();

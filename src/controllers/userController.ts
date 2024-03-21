@@ -31,10 +31,22 @@ export const updateMyUser = catchAsync(
          { new: true, runValidators: true },
       );
 
-      res.status(200).json({
+      res.status(201).json({
          status: "success",
          data: {
             user: currentUser,
+         },
+      });
+   },
+);
+
+export const DelMyUser = catchAsync(
+   async (req: IRole, res: Response, next: NextFunction) => {
+      await User.findByIdAndUpdate(req.user._id, { active: false });
+      res.status(204).json({
+         status: "success",
+         data: {
+            user: null,
          },
       });
    },
