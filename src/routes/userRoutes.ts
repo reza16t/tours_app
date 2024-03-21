@@ -10,6 +10,7 @@ import {
    createUser,
    deleteUser,
    getUsers,
+   updateMyUser,
    updateUser,
 } from "../controllers/userController";
 import express from "express";
@@ -20,6 +21,7 @@ router.route("/").get(getUsers).post(createUser);
 router.post("/signup", signup);
 router.post("/signin", signin);
 router.patch("/update-password", protect, updatePassword);
+router.patch("/update-me", protect, updateMyUser);
 
 router.post("/forgotpassword", forgotPassword);
 router.patch("/resetpassword/:token", resetPassword);

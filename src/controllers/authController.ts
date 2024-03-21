@@ -92,7 +92,7 @@ export const protect = catchAsync(
    },
 );
 
-export const restrictTo = (...role) => {
+export const restrictTo = (...role: string[]) => {
    return (req: IRole, res: Response, next: NextFunction) => {
       if (!role.includes(req.user.role)) {
          return next(
@@ -184,7 +184,6 @@ export const resetPassword = catchAsync(
 export const updatePassword = catchAsync(
    async (req: IRole, res: Response, next: NextFunction) => {
       const currentUser = await User.findById(req.user.id).select("+password");
-      console.log("fuck");
       if (
          !currentUser ||
          !(await currentUser.correctPassword(
