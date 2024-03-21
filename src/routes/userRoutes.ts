@@ -7,6 +7,7 @@ import {
    updatePassword,
 } from "../controllers/authController";
 import {
+   DelMyUser,
    createUser,
    deleteUser,
    getUsers,
@@ -22,7 +23,7 @@ router.post("/signup", signup);
 router.post("/signin", signin);
 router.patch("/update-password", protect, updatePassword);
 router.patch("/update-me", protect, updateMyUser);
-router.delete("/delete-me", protect, deleteUser);
+router.delete("/delete-me", protect, DelMyUser);
 
 router.post("/forgotpassword", forgotPassword);
 router.patch("/resetpassword/:token", resetPassword);

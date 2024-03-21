@@ -56,6 +56,10 @@ userSchema.pre("save", function (next) {
    this.passwordChangedAt = new Date().toISOString();
    next();
 });
+userSchema.pre(/^find/, function (next) {
+   (this as any).find({ active: { $ne: false } });
+   next();
+});
 userSchema.methods.correctPassword = async function (
    candidatePassword: string,
    userPassword: string,
