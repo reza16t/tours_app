@@ -6,6 +6,25 @@ import { sign, verify } from "jsonwebtoken";
 import { ErrorHandler } from "../util/ErrorHandler";
 import sendEmail from "../util/email";
 import { createHash } from "crypto";
+export const createToken = (res: Response, statusCode: number, user) => {
+   const token = sign({ id: user._id }, process.env.JWT_SECRET, {
+      expiresIn: process.env.JWT_EXPIRES_IN,
+   });
+   res.cookie("jwt", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV == "development" ? false : true,
+      expires: new Date(
+         Date.now() + +process.env.COOKIES_EXPIRES * 24 * 60 * 60 * 1000,
+      ),
+   });
+   res.status(statusCode).json({
+      status: "success",
+      token,
+      data: {
+         user,
+      },
+   });
+};
 
 export const signup = catchAsync(async (req: Request, res: Response) => {
    const user: IUser = await User.create({
@@ -15,17 +34,7 @@ export const signup = catchAsync(async (req: Request, res: Response) => {
       passwordConfirm: req.body.passwordConfirm,
       passwordChangedAt: req.body.passwordChangedAt,
    });
-
-   const token = sign({ id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: process.env.JWT_EXPIRES_IN,
-   });
-   res.status(201).json({
-      status: "success",
-      token,
-      data: {
-         user,
-      },
-   });
+   createToken(res, 200, user);
 });
 
 export const signin = catchAsync(
@@ -40,13 +49,7 @@ export const signin = catchAsync(
       if (!user || !(await user.correctPassword(password, user.password))) {
          return next(new ErrorHandler("incorrect email/password", 401));
       }
-      const token = sign({ id: user._id }, process.env.JWT_SECRET, {
-         expiresIn: process.env.JWT_EXPIRES_IN,
-      });
-      res.status(200).json({
-         status: "success",
-         token,
-      });
+      createToken(res, 201, user);
    },
 );
 
@@ -168,16 +171,7 @@ export const resetPassword = catchAsync(
       currentUser.passwordRestExpires = undefined;
       await currentUser.save();
 
-      const token = sign({ id: currentUser._id }, process.env.JWT_SECRET, {
-         expiresIn: process.env.JWT_EXPIRES_IN,
-      });
-      res.status(201).json({
-         status: "success",
-         token,
-         data: {
-            currentUser,
-         },
-      });
+      createToken(res, 201, currentUser);
    },
 );
 
@@ -196,15 +190,6 @@ export const updatePassword = catchAsync(
       currentUser.password = req.body.newPassword;
       currentUser.passwordConfirm = req.body.newPasswordConfirm;
       await currentUser.save();
-      const token = sign({ id: currentUser._id }, process.env.JWT_SECRET, {
-         expiresIn: process.env.JWT_EXPIRES_IN,
-      });
-      res.status(201).json({
-         status: "success",
-         token,
-         data: {
-            currentUser,
-         },
-      });
+      createToken(res, 201, currentUser);
    },
 );
