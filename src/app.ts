@@ -2,10 +2,11 @@ import express, { Request, Response, NextFunction } from "express";
 import { ErrorHandler } from "./util/ErrorHandler";
 import { globalErrorHandler } from "./controllers/errorController";
 import helmet from "helmet";
+import ReviewRouter from "./routes/reviewRouter";
+import toursRouter from "./routes/tourRoutes";
 const morgan = require("morgan");
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
-const tourRouter = require("./routes/tourRoutes");
 const userRouter = require("./routes/userRoutes");
 const rateLimit = require("express-rate-limit");
 const mongoSanitize = require("express-mongo-sanitize");
@@ -61,8 +62,9 @@ app.use(
 app.use(express.static(`${__dirname}/public`));
 
 // 3) ROUTES
-app.use("/api/v1/tours", tourRouter);
+app.use("/api/v1/tours", toursRouter);
 app.use("/api/v1/users", userRouter);
+app.use("/api/v1/review", ReviewRouter);
 
 app.all("*", (req: Request, res: Response, next: NextFunction) => {
    next(new ErrorHandler(`Can't find ${req.originalUrl} on this server!`, 404));

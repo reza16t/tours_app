@@ -1,6 +1,5 @@
-import { Schema, model } from "mongoose";
-import { ToursTypeFull } from "../types";
-
+import mongoose, { Schema, model } from "mongoose";
+import { ToursTypeFull, Type } from "../types";
 // 1) MIDDLEWARES
 const toursSchema = new Schema<ToursTypeFull>(
    {
@@ -19,15 +18,21 @@ const toursSchema = new Schema<ToursTypeFull>(
          ],
          // validate: [validator.isAlpha, 'Tour name must only contain characters']
       },
+      description: {
+         type: String,
+         trim: true,
+      },
+
       // slug: String,
       duration: {
          type: Number,
          required: [true, "A tour must have a duration"],
       },
-      maxGroupSize: {
+      price: {
          type: Number,
-         required: [true, "A tour must have a group size"],
+         required: [true, "A tour must have a price"],
       },
+
       difficulty: {
          type: String,
          required: [true, "A tour must have a difficulty"],
@@ -46,10 +51,7 @@ const toursSchema = new Schema<ToursTypeFull>(
          type: Number,
          default: 0,
       },
-      price: {
-         type: Number,
-         required: [true, "A tour must have a price"],
-      },
+
       priceDiscount: {
          type: Number,
          validate: {
@@ -60,14 +62,14 @@ const toursSchema = new Schema<ToursTypeFull>(
             message: "Discount price ({VALUE}) should be below regular price",
          },
       },
+      maxGroupSize: {
+         type: Number,
+         required: [true, "A tour must have a group size"],
+      },
       summary: {
          type: String,
          trim: true,
          required: [true, "A tour must have a description"],
-      },
-      description: {
-         type: String,
-         trim: true,
       },
       imageCover: {
          type: String,
@@ -81,9 +83,38 @@ const toursSchema = new Schema<ToursTypeFull>(
       },
       startDates: [Date],
       slug: String,
+
       secretTour: {
          type: Boolean,
          default: false,
+      },
+      guides: [
+         {
+            type: mongoose.Schema.ObjectId,
+            ref: "User",
+         },
+      ],
+      locations: [
+         {
+            type: {
+               type: String,
+               default: Type.Point,
+            },
+            coordinates: [Number],
+            description: String,
+            address: String,
+            day: Number,
+         },
+      ],
+      startLocation: {
+         type: {
+            type: String,
+            default: Type.Point,
+         },
+         coordinates: [Number],
+         description: String,
+         address: String,
+         day: Number,
       },
    },
    {
@@ -92,7 +123,11 @@ const toursSchema = new Schema<ToursTypeFull>(
    },
 );
 
-// toursSchema.pre(/^find/, function () {
-//    console.log((<any>this).schema);
+// toursSchema.pre("save", async function (next) {
+//    const guides = (this.guides as string[]).map(
+//       async (id) => await User.findById(id),
+//    );
+//    this.guides = await Promise.all(guides);
+//    next();
 // });
 export const Tour = model<ToursTypeFull>("Tour", toursSchema);

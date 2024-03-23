@@ -15,19 +15,19 @@ import express from "express";
 import { Role } from "../types";
 // const tourController = require('./../controllers/ts');
 
-const router = express.Router();
+const toursRouter = express.Router();
 
-router
+toursRouter
    .route("/")
    .get(protect, restrictTo("admin"), getAllTours)
    .post(createTour);
-router.route("/tours-stats").get(getTourStats);
-router.route("/monthly-plan/:year").get(getMonthlyPlan);
-router.route("/top-5-cheap").get(aliasTopTours, getAllTours);
-router
+toursRouter.route("/tours-stats").get(getTourStats);
+toursRouter.route("/monthly-plan/:year").get(getMonthlyPlan);
+toursRouter.route("/top-5-cheap").get(aliasTopTours, getAllTours);
+toursRouter
    .route("/:id")
    .get(getTour)
    .patch(updateTour)
    .delete(protect, restrictTo(Role.Admin), deleteTour);
 
-module.exports = router;
+export default toursRouter;
