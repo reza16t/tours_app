@@ -7,8 +7,8 @@ const reviewSchema = new Schema<IReview>(
          type: String,
          required: [true, "A review can't be empty "],
          maxlength: [
-            40,
-            "A tour name must have less or equal then 40 characters",
+            214,
+            "A tour name must have less or equal then 214 characters",
          ],
          minlength: [
             8,
@@ -42,4 +42,15 @@ const reviewSchema = new Schema<IReview>(
       toObject: { virtuals: true },
    },
 );
+reviewSchema.pre(/^find/, function (this: IReview, next) {
+   this.populate({
+      path: "tour",
+      select: "name",
+   });
+   this.populate({
+      path: "user",
+      select: "name email",
+   });
+   next();
+});
 export const Review = model<IReview>("Review", reviewSchema);

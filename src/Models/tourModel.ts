@@ -122,7 +122,21 @@ const toursSchema = new Schema<ToursTypeFull>(
       toObject: { virtuals: true },
    },
 );
-
+toursSchema.pre(/^find/, function (this: ToursTypeFull, next) {
+   this.populate({
+      path: "guides",
+      select: "name _id email",
+   });
+   next();
+});
+toursSchema.virtual("durationWeeks").get(function () {
+   return this.duration / 7;
+});
+toursSchema.virtual("reviews", {
+   ref: "Review",
+   foreignField: "tour",
+   localField: "_id",
+});
 // toursSchema.pre("save", async function (next) {
 //    const guides = (this.guides as string[]).map(
 //       async (id) => await User.findById(id),

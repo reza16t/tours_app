@@ -31,10 +31,7 @@ export const getAllTours = catchAsync(async (req: Request, res: Response) => {
 
 export const getTour = catchAsync(
    async (req: Request, res: Response, next: NextFunction) => {
-      const tour = await Tour.findById(req.params.id).populate({
-         path: "guides",
-         select: "name _id email",
-      });
+      const tour = await Tour.findById(req.params.id).populate("reviews");
 
       if (!tour) {
          console.log(tour);
