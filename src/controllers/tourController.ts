@@ -1,9 +1,13 @@
-import { Response, Request } from "express";
+import { Response, Request, NextFunction } from "express";
 import { Tour } from "../Models/tourModel";
 import { catchAsync } from "../util/catchAsync";
 import { createOne, delOne, getAll, getOne, updateOne } from "./handelFactory";
 
-export const aliasTopTours = (req, res, next) => {
+export const aliasTopTours = (
+   req: Request,
+   res: Response,
+   next: NextFunction,
+) => {
    req.query.limit = "5";
    req.query.sort = "-ratingsAverage,price";
    req.query.fields = "name,price,ratingsAverage,summary,difficulty";

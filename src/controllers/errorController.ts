@@ -1,26 +1,28 @@
 import { Response, Request } from "express";
 import { ErrorHandler } from "../util/ErrorHandler";
+import { IError } from "../types";
+import { Error } from "mongoose";
 
-const handleCastErrorDB = (err) => {
+const handleCastErrorDB = (err: IError) => {
    const message = `Invalid ${err.path}: ${err.value}.`;
    return new ErrorHandler(message, 400);
 };
 
-const handleDuplicateFieldsDB = (err) => {
+const handleDuplicateFieldsDB = (err: IError) => {
    const value = err.errmsg.match(/(["'])(\\?.)*?\1/)[0];
    console.log(value);
 
    const message = `Duplicate field value: ${value}. Please use another value!`;
    return new ErrorHandler(message, 400);
 };
-const handleValidationErrorDB = (err) => {
+const handleValidationErrorDB = (err: IError) => {
    const errors = Object.values(err.errors).map((el: Error) => el.message);
 
    const message = `Invalid input data. ${errors.join(". ")}`;
    return new ErrorHandler(message, 400);
 };
 
-const sendErrorDev = (err, res: Response) => {
+const sendErrorDev = (err: IError, res: Response) => {
    res.status(err.statusCode).json({
       status: err.status,
       error: err,
@@ -29,7 +31,7 @@ const sendErrorDev = (err, res: Response) => {
    });
 };
 
-const sendErrorProd = (err, res: Response) => {
+const sendErrorProd = (err: IError, res: Response) => {
    if (err.isOperational) {
       res.status(err.statusCode).json({
          status: err.status,
@@ -44,7 +46,7 @@ const sendErrorProd = (err, res: Response) => {
 };
 
 export const globalErrorHandler = (
-   err,
+   err: IError,
    req: Request,
    res: Response,
    next: NewableFunction,

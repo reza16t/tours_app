@@ -1,5 +1,5 @@
 import { Schema, model } from "mongoose";
-import { IUserDocument, Role } from "../types";
+import { IUserDocument, Role, IModel } from "../types";
 import bcrypt from "bcryptjs";
 import { createHash, randomBytes } from "crypto";
 export const userSchema = new Schema<IUserDocument>({
@@ -19,7 +19,7 @@ export const userSchema = new Schema<IUserDocument>({
       required: [true, "Please confirm your password!"],
 
       validate: {
-         validator: function (el) {
+         validator: function (el: string) {
             return el === this.password;
          },
          message: "Passwords are not the same!",
@@ -56,8 +56,8 @@ userSchema.pre("save", function (next) {
    this.passwordChangedAt = new Date().toISOString();
    next();
 });
-userSchema.pre(/^find/, function (next) {
-   (this as any).find({ active: { $ne: false } });
+userSchema.pre(/^find/, function (this: IModel, next) {
+   this.find();
    next();
 });
 userSchema.methods.correctPassword = async function (

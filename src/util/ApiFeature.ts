@@ -1,6 +1,7 @@
 import QueryString from "qs";
 import { Document, Query } from "mongoose";
 import { IUserDocument, ITours, IReview } from "../types";
+
 export class ApiFeatures {
    query: Query<
       (Document<unknown, object, ITours | IUserDocument | IReview> &
@@ -12,7 +13,7 @@ export class ApiFeatures {
    >;
 
    queryStr: QueryString.ParsedQs;
-   constructor(query, queryStr) {
+   constructor(query, queryStr: QueryString.ParsedQs) {
       this.query = query;
       this.queryStr = queryStr;
    }

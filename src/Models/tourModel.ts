@@ -55,7 +55,7 @@ const toursSchema = new Schema<ITours>(
       priceDiscount: {
          type: Number,
          validate: {
-            validator: function (val) {
+            validator: function (val: number) {
                // this only points to current doc on NEW document creation
                return val < this.price;
             },

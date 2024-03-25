@@ -1,12 +1,16 @@
 import { NextFunction, Request, Response } from "express";
 import { User } from "../Models/userModel";
-import { IDecoded, IRole, IUser, Role } from "../types";
+import { IDecoded, IRole, IUserDocument, Role } from "../types";
 import { catchAsync } from "../util/catchAsync";
 import { sign, verify } from "jsonwebtoken";
 import { ErrorHandler } from "../util/ErrorHandler";
 import sendEmail from "../util/email";
 import { createHash } from "crypto";
-export const createToken = (res: Response, statusCode: number, user) => {
+export const createToken = (
+   res: Response,
+   statusCode: number,
+   user: IUserDocument,
+) => {
    const token = sign({ id: user._id }, process.env.JWT_SECRET, {
       expiresIn: process.env.JWT_EXPIRES_IN,
    });
@@ -27,7 +31,7 @@ export const createToken = (res: Response, statusCode: number, user) => {
 };
 
 export const signup = catchAsync(async (req: Request, res: Response) => {
-   const user: IUser = await User.create({
+   const user: IUserDocument = await User.create({
       name: req.body.name,
       email: req.body.email,
       password: req.body.password,

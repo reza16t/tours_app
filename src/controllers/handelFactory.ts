@@ -1,10 +1,10 @@
 import { NextFunction, Request, Response } from "express";
-import { IReview, IRole, ITours, model } from "../types";
+import { IReview, IRole, ITours, IUserDocument, IModel } from "../types";
 import { catchAsync } from "../util/catchAsync";
 import { ErrorHandler } from "../util/ErrorHandler";
 import { ApiFeatures } from "../util/ApiFeature";
 
-export const getAll = (model: model) =>
+export const getAll = (model: IModel) =>
    catchAsync(async (req: Request, res: Response) => {
       let filter: object = {};
       if (req.params.tourId) filter = { tour: req.params.tourId };
@@ -23,7 +23,7 @@ export const getAll = (model: model) =>
       });
    });
 
-export const getOne = (model: model, popOption?) =>
+export const getOne = (model: IModel, popOption?) =>
    catchAsync(async (req: Request, res: Response, next: NextFunction) => {
       let query;
       if (popOption) {
@@ -43,9 +43,11 @@ export const getOne = (model: model, popOption?) =>
          },
       });
    });
-export const createOne = (model) =>
+export const createOne = (model: IModel) =>
    catchAsync(async (req: Request, res: Response) => {
-      const doc: ITours | IReview = await model.create(req.body);
+      const doc: ITours | IReview | IUserDocument = await model.create(
+         req.body,
+      );
       res.status(201).json({
          status: "success",
          data: {
@@ -53,7 +55,7 @@ export const createOne = (model) =>
          },
       });
    });
-export const updateOne = (model: model) =>
+export const updateOne = (model: IModel) =>
    catchAsync(async (req: IRole, res: Response, next: NextFunction) => {
       const docId: string = req.params.id;
       const doc = await model.findByIdAndUpdate(docId, req.body, {
@@ -70,7 +72,7 @@ export const updateOne = (model: model) =>
          },
       });
    });
-export const delOne = (model: model) =>
+export const delOne = (model: IModel) =>
    catchAsync(async (req: IRole, res: Response, next: NextFunction) => {
       const docID: string = req.params.id;
       await model.findByIdAndDelete(docID);
