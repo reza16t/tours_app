@@ -13,13 +13,15 @@ import {
 } from "../controllers/tourController";
 import express from "express";
 import { Role } from "../types";
+import ReviewRouter from "./reviewRouter";
 // const tourController = require('./../controllers/ts');
 
 const toursRouter = express.Router();
 
+toursRouter.use("/:tourId/reviews", ReviewRouter);
 toursRouter
    .route("/")
-   .get(protect, restrictTo("admin"), getAllTours)
+   .get(protect, restrictTo(Role.Admin), getAllTours)
    .post(createTour);
 toursRouter.route("/tours-stats").get(getTourStats);
 toursRouter.route("/monthly-plan/:year").get(getMonthlyPlan);

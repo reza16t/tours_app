@@ -1,9 +1,9 @@
-import { Response, Request, NextFunction } from "express";
+import { Response, NextFunction } from "express";
 import { User } from "../Models/userModel";
-import { ApiFeatures } from "../util/ApiFeature";
 import { catchAsync } from "../util/catchAsync";
 import { ErrorHandler } from "../util/ErrorHandler";
 import { IRole } from "../types";
+import { delOne, getAll, getOne, updateOne } from "./handelFactory";
 
 const filterObj = (obj, ...allowedFields: string[]): object => {
    const newObj = {};
@@ -51,38 +51,12 @@ export const DelMyUser = catchAsync(
       });
    },
 );
+export const getMe = (req: IRole, res: Response, next: NextFunction) => {
+   req.params.id = req.user.id;
+   next();
+};
+export const getUsers = getAll(User);
 
-export const getUsers = catchAsync(async (req: Request, res: Response) => {
-   const feature = new ApiFeatures(User.find(), req.query)
-      .filter()
-      .sort()
-      .fields()
-      .pagination();
-
-   const users = await feature.query;
-   res.status(200).json({
-      status: "success",
-      results: users.length,
-      data: {
-         users,
-      },
-   });
-});
-export const createUser = (req: Request, res: Response) => {
-   res.status(500).json({
-      status: "error",
-      message: "This route is not yet defined!",
-   });
-};
-export const updateUser = (req: Request, res: Response) => {
-   res.status(500).json({
-      status: "error",
-      message: "This route is not yet defined!",
-   });
-};
-export const deleteUser = (req: Request, res: Response) => {
-   res.status(500).json({
-      status: "error",
-      message: "This route is not yet defined!",
-   });
-};
+export const getUser = getOne(User);
+export const updateUser = updateOne(User);
+export const deleteUser = delOne(User);

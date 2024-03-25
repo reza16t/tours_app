@@ -64,7 +64,7 @@ app.use(express.static(`${__dirname}/public`));
 // 3) ROUTES
 app.use("/api/v1/tours", toursRouter);
 app.use("/api/v1/users", userRouter);
-app.use("/api/v1/review", ReviewRouter);
+app.use("/api/v1/reviews", ReviewRouter);
 
 app.all("*", (req: Request, res: Response, next: NextFunction) => {
    next(new ErrorHandler(`Can't find ${req.originalUrl} on this server!`, 404));

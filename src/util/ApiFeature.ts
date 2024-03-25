@@ -1,10 +1,14 @@
 import QueryString from "qs";
 import { Document, Query } from "mongoose";
-import { IUserDocument, ToursTypeFull } from "../types";
+import { IUserDocument, ITours, IReview } from "../types";
 export class ApiFeatures {
    query: Query<
-      (Document<unknown, object> & Required<{ _id: string }>)[],
-      Document<unknown, object> & ToursTypeFull & IUserDocument
+      (Document<unknown, object, ITours | IUserDocument | IReview> &
+         Required<{ _id: string }>)[],
+      Document<unknown, object, ITours | IUserDocument | IReview> &
+         ITours &
+         IUserDocument &
+         IReview
    >;
 
    queryStr: QueryString.ParsedQs;

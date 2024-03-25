@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { User } from "../Models/userModel";
-import { IDecoded, IRole, IUser } from "../types";
+import { IDecoded, IRole, IUser, Role } from "../types";
 import { catchAsync } from "../util/catchAsync";
 import { sign, verify } from "jsonwebtoken";
 import { ErrorHandler } from "../util/ErrorHandler";
@@ -95,7 +95,7 @@ export const protect = catchAsync(
    },
 );
 
-export const restrictTo = (...role: string[]) => {
+export const restrictTo = (...role: Role[]) => {
    return (req: IRole, res: Response, next: NextFunction) => {
       if (!role.includes(req.user.role)) {
          return next(

@@ -1,7 +1,7 @@
 import mongoose, { Schema, model } from "mongoose";
-import { ToursTypeFull, Type } from "../types";
+import { ITours, Type } from "../types";
 // 1) MIDDLEWARES
-const toursSchema = new Schema<ToursTypeFull>(
+const toursSchema = new Schema<ITours>(
    {
       name: {
          type: String,
@@ -122,7 +122,7 @@ const toursSchema = new Schema<ToursTypeFull>(
       toObject: { virtuals: true },
    },
 );
-toursSchema.pre(/^find/, function (this: ToursTypeFull, next) {
+toursSchema.pre(/^find/, function (this: ITours, next) {
    this.populate({
       path: "guides",
       select: "name _id email",
@@ -144,4 +144,4 @@ toursSchema.virtual("reviews", {
 //    this.guides = await Promise.all(guides);
 //    next();
 // });
-export const Tour = model<ToursTypeFull>("Tour", toursSchema);
+export const Tour = model<ITours>("Tour", toursSchema);
