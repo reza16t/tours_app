@@ -21,15 +21,21 @@ const toursRouter = express.Router();
 toursRouter.use("/:tourId/reviews", ReviewRouter);
 toursRouter
    .route("/")
-   .get(protect, restrictTo(Role.Admin), getAllTours)
-   .post(createTour);
+   .get(getAllTours)
+   .post(protect, restrictTo(Role.Admin, Role.LeadGuide), createTour);
 toursRouter.route("/tours-stats").get(getTourStats);
-toursRouter.route("/monthly-plan/:year").get(getMonthlyPlan);
+toursRouter
+   .route("/monthly-plan/:year")
+   .get(
+      protect,
+      restrictTo(Role.Admin, Role.LeadGuide, Role.Guide),
+      getMonthlyPlan,
+   );
 toursRouter.route("/top-5-cheap").get(aliasTopTours, getAllTours);
 toursRouter
    .route("/:id")
    .get(getTour)
-   .patch(updateTour)
+   .patch(protect, restrictTo(Role.Admin, Role.LeadGuide), updateTour)
    .delete(protect, restrictTo(Role.Admin), deleteTour);
 
 export default toursRouter;
