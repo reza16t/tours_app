@@ -4,6 +4,7 @@ import {
    createTour,
    deleteTour,
    getAllTours,
+   getDistance,
    getMonthlyPlan,
    getTour,
    getTourStats,
@@ -12,7 +13,7 @@ import {
    // insertAllTours,
    updateTour,
 } from "../controllers/tourController";
-import express, { Router } from "express";
+import express from "express";
 import { Role } from "../types";
 import ReviewRouter from "./reviewRouter";
 // const tourController = require('./../controllers/ts');
@@ -40,6 +41,7 @@ toursRouter
    .delete(protect, restrictTo(Role.Admin), deleteTour);
 
 toursRouter
-   .route("api/v1/tours-within/:distance/center/:lanlag/unit/:unit")
+   .route("/tours-within/:distance/center/:latlng/unit/:unit")
    .get(getTourWithIn);
+toursRouter.route("/distance/:latlng/unit/:unit").get(getDistance);
 export default toursRouter;
