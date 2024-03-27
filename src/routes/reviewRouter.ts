@@ -13,7 +13,7 @@ const ReviewRouter = Router({ mergeParams: true });
 ReviewRouter.use(protect);
 ReviewRouter.route("/")
    .get(getReviews)
-   .post(restrictTo(Role.User), createReview);
+   .post(restrictTo(Role.User, Role.Admin), createReview);
 ReviewRouter.route("/:id")
    .patch(restrictTo(Role.User), updateReview)
    .delete(restrictTo(Role.User), delReview)

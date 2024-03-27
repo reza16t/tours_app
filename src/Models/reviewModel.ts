@@ -1,8 +1,10 @@
-import { Schema, model } from "mongoose";
-import { IReview } from "../types";
+import mongoose, { Schema, model } from "mongoose";
+import { IModel, IReview } from "../types";
+import { Tour } from "./tourModel";
 
 const reviewSchema = new Schema<IReview>(
    {
+      tourId: String,
       review: {
          type: String,
          required: [true, "A review can't be empty "],
@@ -26,13 +28,14 @@ const reviewSchema = new Schema<IReview>(
       },
       user: [
          {
-            type: Schema.ObjectId,
+            type: mongoose.Schema.ObjectId,
             ref: "User",
          },
       ],
+
       tour: [
          {
-            type: Schema.ObjectId,
+            type: mongoose.Schema.ObjectId,
             ref: "Tour",
          },
       ],
@@ -42,6 +45,44 @@ const reviewSchema = new Schema<IReview>(
       toObject: { virtuals: true },
    },
 );
+reviewSchema.statics.calcAverageRating = async function (
+   tourId: string,
+): Promise<void> {
+   const stats: { id: string; nRating: number; avgRating: number }[] =
+      await this.aggregate([
+         { $match: { tour: tourId } },
+         {
+            $group: {
+               _id: "$tour",
+               nRating: { $sum: 1 },
+               avgRating: { $avg: "$rating" },
+            },
+         },
+      ]);
+   if (stats.length > 0) {
+      await Tour.findByIdAndUpdate(tourId, {
+         ratingsAverage: stats[0].avgRating,
+         ratingsQuantity: stats[0].nRating,
+      });
+   } else {
+      await Tour.findByIdAndUpdate(tourId, {
+         ratingsAverage: 4.5,
+         ratingsQuantity: 0,
+      });
+   }
+};
+reviewSchema.post("save", function (this: IReview) {
+   this.constructor.calcAverageRating(this.tour);
+});
+reviewSchema.pre(/^findOneAnd/, function (this: IModel, next) {
+   (this as any).r = this.findOne();
+   next();
+});
+reviewSchema.post(/^findOneAnd/, function (this: IModel, next) {
+   (this as any).r.constructor.calcAverageRating((this as any).r.tour);
+   next();
+});
+
 reviewSchema.pre(/^find/, function (this: IReview, next) {
    this.populate({
       path: "tour",
@@ -53,4 +94,5 @@ reviewSchema.pre(/^find/, function (this: IReview, next) {
    });
    next();
 });
+
 export const Review = model<IReview>("Review", reviewSchema);

@@ -27,7 +27,7 @@ export const getOne = (model: IModel, popOption?) =>
    catchAsync(async (req: Request, res: Response, next: NextFunction) => {
       let query;
       if (popOption) {
-         query = query.populate(popOption);
+         query = model.findById(req.params.id).populate(popOption);
       } else {
          query = model.findById(req.params.id);
       }

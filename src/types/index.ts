@@ -101,6 +101,8 @@ export interface IReview extends Document {
    createdAt: number | string | Date;
    tour: string;
    user: string;
+   tourId: string;
+   calcAverageRating: (tourId: string) => Promise<void>;
 }
 
 export type IModel = Model<

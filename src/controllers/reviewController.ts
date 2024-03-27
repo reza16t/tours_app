@@ -23,6 +23,7 @@ export const createReview = catchAsync(
          rating: req.body.rating,
          tour: tourId,
          user: req.user._id,
+         tourId: tourId,
       });
       res.status(201).json({
          status: "success",

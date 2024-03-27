@@ -7,11 +7,12 @@ import {
    getMonthlyPlan,
    getTour,
    getTourStats,
+   getTourWithIn,
 
    // insertAllTours,
    updateTour,
 } from "../controllers/tourController";
-import express from "express";
+import express, { Router } from "express";
 import { Role } from "../types";
 import ReviewRouter from "./reviewRouter";
 // const tourController = require('./../controllers/ts');
@@ -38,4 +39,7 @@ toursRouter
    .patch(protect, restrictTo(Role.Admin, Role.LeadGuide), updateTour)
    .delete(protect, restrictTo(Role.Admin), deleteTour);
 
+toursRouter
+   .route("api/v1/tours-within/:distance/center/:lanlag/unit/:unit")
+   .get(getTourWithIn);
 export default toursRouter;

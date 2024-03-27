@@ -14,7 +14,6 @@ export const aliasTopTours = (
    next();
 };
 export const getAllTours = getAll(Tour);
-
 export const createTour = createOne(Tour);
 export const getTour = getOne(Tour, "reviews");
 export const updateTour = updateOne(Tour);
@@ -81,3 +80,6 @@ export const getMonthlyPlan = catchAsync(
       });
    },
 );
+export function getTourWithIn(req: Request, res: Response, next: NextFunction) {
+   const { lanlag, distance, unit } = req.params;
+}
