@@ -4,6 +4,7 @@ import { globalErrorHandler } from "./controllers/errorController";
 import helmet from "helmet";
 import ReviewRouter from "./routes/reviewRouter";
 import toursRouter from "./routes/tourRoutes";
+import path from "path";
 const morgan = require("morgan");
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
@@ -14,6 +15,8 @@ const xss = require("xss-clean");
 const hpp = require("hpp");
 
 const app = express();
+app.set("view engine", "pug");
+app.set("views", path.join(__dirname, "views"));
 dotenv.config({ path: "./config.env" });
 // 1) GLOBAL MIDDLEWARES
 // Set security HTTP headers
